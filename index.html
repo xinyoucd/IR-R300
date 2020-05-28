@@ -1,0 +1,155 @@
+---
+layout: minimal
+---
+
+<main class="home" id="post" role="main" itemprop="mainContentOfPage" itemscope="itemscope" itemtype="http://schema.org/Blog">
+    <p>
+      This is a site to showcase robots using ROS.
+      You can browse all, by <a href="{{ site.url }}{{site.baseurl}}/tags">tag</a> or <a href="{{ site.url }}{{site.baseurl}}/categories">category</a> as well as search.
+      If there's a robot you want to see here please <a href="{{ site.url }}{{site.baseurl}}/contributing">contribute</a> via a <a href="https://github.com/ros-infrastructure/robots.ros.org">pull request on github</a>.
+    </p>
+    <h2>Robot Video Montages</h2>
+
+    <div class="w3-content w3-display-container">
+      <div class="montages">
+        <iframe src="https://player.vimeo.com/video/245826128" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      </div>
+      <div class="montages">
+        <iframe src="https://player.vimeo.com/video/146183080" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+      </div>
+      <div class="montages">
+        <iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/PGaXiLZD2KQ?rel=0" frameborder="0" allowfullscreen></iframe>
+      </div>
+      <div class="montages">
+        <iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/7cslPMzklVo?rel=0" frameborder="0" allowfullscreen></iframe>
+      </div>
+
+      <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+      <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+    </div>
+
+    <script>
+      var slideIndex = 1;
+      showDivs(slideIndex);
+
+      function plusDivs(n) {
+        showDivs(slideIndex += n);
+      }
+
+      function showDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("montages");
+        if (n > x.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = x.length}
+        for (i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
+        }
+        x[slideIndex-1].style.display = "block";
+      }
+    </script>
+
+    {% if site.featured_robots.size >= 1 %}
+    {% if site.featured_robots.size > 1 %}
+    <h2>Featured Robots</H2>
+    {% else %}
+    <h2>Featured Robot</H2>
+    {% endif %}
+    <div class="w3-content w3-display-container">
+    {% for robot in site.featured_robots %}
+      {% for post in site.posts %}
+        {% if post.title == robot %}
+      <div class="features">
+        <div id="grid" class="row flex-grid feature-container">
+          {% include box-item.html %}
+        </div>
+      </div>
+        {% endif %}
+      {% endfor %}
+    {% endfor %}
+    
+    {% if site.featured_robots.size > 1 %}
+      <button class="w3-button w3-black w3-display-left" onclick="plusFeatureDivs(-1); stopFeatures();">&#10094;</button>
+      <button class="w3-button w3-black w3-display-right" onclick="plusFeatureDivs(1); stopFeatures();">&#10095;</button>
+    {% endif %}
+      
+    </div>
+    {% if site.featured_robots.size > 1 %}
+    <script>
+      var featureIndex = 1;
+      showFeatureDivs(featureIndex);
+
+      function plusFeatureDivs(n) {
+        showFeatureDivs(featureIndex += n);
+      }
+
+      function showFeatureDivs(n) {
+        var i;
+        var x = document.getElementsByClassName("features");
+        if (n > x.length) {featureIndex = 1}
+        if (n < 1) {featureIndex = x.length}
+        for (i = 0; i < x.length; i++) {
+          x[i].style.display = "none";
+        }
+        x[featureIndex-1].style.display = "block";
+      }
+      function incrementFeatures() {
+        plusFeatureDivs(1);
+      }
+      var intervalID = setInterval(incrementFeatures, 10000);
+      
+      function stopFeatures() {
+        clearInterval(intervalID);
+      }
+      </script>
+    {% endif %}
+    {% endif %}
+
+    <a href="/tags"><H2>Find a robot by tag:</H2></a>
+    <div class="tags">
+      {% assign tags_list = site.tags | sort %}
+      {% if tags_list.first[0] == null %}
+        {% for tag in tags_list %}
+            <a href="/tags#{{ tag | slugify }}">{{ tag }}</a>
+        {% endfor %}
+      {% else %}
+        {% for tag in tags_list %}
+            <a href="/tags#{{ tag[0] | slugify }}">{{ tag[0] }}</a>
+        {% endfor %}
+      {% endif %}
+    {% assign tags_list = nil %}
+    </div>
+
+
+    <H2>Find a robot by category:</H2>
+      <div id="categories_grid" class="row flex-grid">
+    {% for category in site.top_level_categories %}
+    <article class="small-box-item post-{{category.url}}" itemscope="itemscope" itemtype="http://schema.org/BlogPosting" itemprop="blogPost">
+    <div class="small-box-body">
+    <a href="/category/{{ category.url | slugify }}"><h3>{{ category.title }}</h3>
+    {% if category.image %}
+    <img src="{{ site.url }}{{site.baseurl}}/assets/img/{{category.image}}"/>
+    {% endif %}
+    </a>
+    </div>
+    </article>
+    {% endfor %}
+    </div>
+
+    <H2>Recently Added</H2>
+    <div id="grid" class="row flex-grid">
+    {% assign dateSortedPosts = site.posts | sort: 'date' | reverse %}
+    {% for post in dateSortedPosts limit:2 %}
+        {% include box-item.html %}
+    {% endfor %}
+    </div>
+    <H2>All Entries (Random Order)</H2>
+    <a href="/all"><h3>Browse all in Alphabetical Order</h3></a>
+    <div id="grid" class="row flex-grid">
+    {% for post in site.posts %}
+      {% assign randomize = 'shuffle-order' %}
+      {% include box-item.html %}
+    {% endfor %}
+    {% include shuffle-items.html %}
+    </div>
+
+</main>
